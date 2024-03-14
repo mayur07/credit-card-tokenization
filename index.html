@@ -1,0 +1,126 @@
+<html>
+  <head>
+    <script src="http://localhost:4000/dist/payment-profile-tokenizer.js"></script>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="example">
+        <div id="first-name"></div>
+        <div id="first-name-error-message"></div>
+        <div id="last-name"></div>
+        <div id="credit-card-number"></div>
+        <div id="credit-card-inline">
+          <div id="expiration-month"></div>
+          <div id="expiration-year"></div>
+          <div id="cvc"></div>
+        </div>
+        <button id="submit">Submit</button>
+        <div id="errors"></div>
+      </div>
+    </div>
+
+    <script>
+      var style = function(style = { field: {}, label: {} }) {
+        var result = {
+          labelInvalid: {
+            borderBottom: '1px solid red',
+          },
+          field: {
+            display: 'inline-block',
+            verticalAlign: 'middle',
+            margin: '0px',
+            borderStyle: 'none',
+            padding: '12px 0',
+            height: '40px',
+            outline: 'none',
+          },
+          fieldInvalid: {
+            borderBottom: '1px solid red',
+          }
+        };
+
+        Object.keys(result).forEach(function(key) {
+          result[key] = Object.assign(result[key], style[key]);
+        });
+
+        return result;
+      }
+
+      var options = {
+        type: 'creditCard',
+        liveValidation: true,
+        fields: {
+          firstName: {
+            selector: '#first-name',
+            placeholder: 'First Name',
+            style: style({ field: { minWidth: '500px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 1
+          },
+          lastName: {
+            selector: '#last-name',
+            placeholder: 'Last Name',
+            style: style({field: { minWidth: '500px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 2
+          },
+          creditCardNumber: {
+            selector: '#credit-card-number',
+            placeholder: 'Card Number',
+            style: style({ field: { width: '500px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 3
+          },
+          expirationMonth: {
+            selector: '#expiration-month',
+            placeholder: 'Expiration Month',
+            style: style({ field: { width: '150px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 4
+          },
+          expirationYear: {
+            selector: '#expiration-year',
+            placeholder: 'Expiration Year',
+            style: style({ field: { marginLeft: '25px', width: '150px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 5
+          },
+          cvv: {
+            selector: '#cvc',
+            placeholder: 'CVC',
+            style: style({ field: { marginLeft: '25px', width: '150px', borderBottom: '1px solid #cfd7df' } }),
+            tabOrder: 6
+          },
+        },
+        onLiveValidation: function(errors) {
+          var elem = document.querySelector('#errors');
+
+          if (errors.length === 0) {
+            elem.innerHTML = '';
+            return;
+          }
+
+          elem.innerHTML = errors[errors.length - 1].errorMessage;
+          console.log(errors);
+        }
+      };
+      var lib = new PaymentProfileTokenizer();
+      lib.create(options);
+
+      document.querySelector('#submit').addEventListener('click', function() {
+        lib.tokenize().then((token) => {
+          console.log('Received token: ' + token);
+        }).catch((error) => {
+          console.error(error);
+          if (!error.hasOwnProperty('invalidFields')) return;
+
+          var elem = document.querySelector('#errors');
+          if (error.invalidFields.length === 0) {
+            elem.innerHTML = '';
+            return;
+          }
+
+          elem.innerHTML = error.invalidFields[0].errorMessage;
+        });
+      });
+    </script>
+
+  </body>
+</html>
+

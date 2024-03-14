@@ -1,0 +1,46 @@
+{
+  "name": "payment-profile-tokenizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development",
+    "watch": "webpack --watch",
+    "start": "webpack serve --port 4000 --open",
+    "pretest": "webpack && forever start ./tests/support/fakeApi.js && forever start -c \"webpack serve --port 4000\" ./",
+    "test": "testcafe -e -u --disable-page-caching --assertion-timeout 20000 --page-load-timeout 60000 --app-init-delay 60000 --selector-timeout 30000 chrome:headless tests/e2e/*.js -q",
+    "posttest": "forever stopall",
+    "lint": "eslint .",
+    "tsc": "tsc"
+  },
+  "author": "Damian Baćkowski",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/eslint-parser": "^7.13.8",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.12.15",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.13.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "testcafe": "^1.19.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.19.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.13",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "forever": "^4.0.2",
+    "source-map-loader": "^2.0.1",
+    "ts-loader": "^9.1.1"
+  }
+}
